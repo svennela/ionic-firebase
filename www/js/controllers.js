@@ -1,28 +1,85 @@
 angular.module('starter.controllers', [])
+.controller('SignupCtrl', function($scope, Fire, Auth, $ionicLoading, $location) {
+  $scope.Signup = function(user) {
+    console.log("Create User Function called");
+    console.log(user);
+    if (user && user.email && user.password) {
+      $ionicLoading.show({
+        template: 'Signing Up...'
+      });
 
-.controller('DashCtrl', function($scope) {})
+      Auth.$createUser({
+        email: user.email,
+        password: user.password
+      }).then(function(userData) {
+        console.log(userData);
+        alert("User created successfully!");
+        Fire.child("users").child(userData.uid).set({
+            email: user.email,
+            displayName: user.displayname
+        });
+        $ionicLoading.hide();
+        $location.path("/login");
+      }).
+      catch (function(error) {
+        switch (error.code) {
+          case "EMAIL_TAKEN":
+            alert("The new user account cannot be created because the email is already in use.");
+            break;
+          case "INVALID_EMAIL":
+            alert("The specified email is not a valid email.");
+            break;
+          default:
+            alert("Error creating user:", error);
+        }
+        $ionicLoading.hide();
+      });
+    } else {
+      alert("Please fill all details");
+    }
+  }
+})
+.controller('LoginCtrl', function($rootScope, $scope, Fire, Auth, $ionicLoading, $location) {
+  $scope.Login = function(user) {
+    console.log(user);
+    if (user && user.email && user.password) {
+      $ionicLoading.show({
+        template: 'Signing In...'
+      });
+      Auth.$authWithPassword({
+        email: user.email,
+        password: user.password
+      }).then(function(authData) {
+        console.log("Logged in as:" + authData.uid);
+        Fire.child("users").child(authData.uid).once('value', function (snapshot) {
+            var val = snapshot.val();
+            $rootScope.loggedInUser = val;
+        });
+        $ionicLoading.hide();
+        $location.path("/app/playlists");
+      }).
+      catch (function(error) {
+        alert("Authentication failed:" + error.message);
+        $ionicLoading.hide();
+      });
+    } else
+      alert("Please enter email and password both");
+  }
+})
+.controller('PlaylistsCtrl', function($scope, Playlists) {
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
+  $scope.playlists = Playlists;
+  $scope.addPlaylist = function() {
+    console.log(Playlists);
+    var title = prompt("Add Your Play List");
+    if (title) {
+      $scope.playlists.$add({
+        "title": title
+      });
+    }
   };
 })
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
-})
-
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
+.controller('PlaylistCtrl', function($scope, $stateParams, Playlist) {
+  $scope.playlist = Playlist.get($stateParams.playlistId);
 });
