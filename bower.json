@@ -5,21 +5,21 @@
     "ionic": "driftyco/ionic-bower#1.1.0"
   },
   "dependencies": {
-    "underscore": "~1.8.3",
-    "ngmap": "~1.9.0",
     "angular-moment": "~0.10.1",
     "angular-resource": "~1.3.11",
-    "ngCordova": "~0.1.17-alpha",
-    "angular-resource": "~1.3.11",
-    "angular-route": "~1.4.0",
-    "angularfire": "~1.1.1",
-    "firebase": "~2.2.9",
+    "angular-route": "~1.4.1",
     "angular-slugify": "williamboman/angular-slugify",
-    "ionic-contrib-tinder-cards": "*",
+    "angular-youtube-mb": "~1.1.0",
+    "angularfire": "~1.1.1",
     "bourbon": "~4.2.3",
-    "angular-youtube-mb": "~1.1.0"
+    "firebase": "~2.2.9",
+    "firebase-simple-login": "~1.6.4",
+    "ionic-contrib-tinder-cards": "*",
+    "ngCordova": "~0.1.17-alpha",
+    "ngmap": "~1.9.0",
+    "underscore": "~1.8.3"
   },
   "resolutions": {
-    "angular": "~1.4.0"
+    "angular": "~1.4.1"
   }
 }
