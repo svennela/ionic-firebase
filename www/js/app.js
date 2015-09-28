@@ -4,9 +4,15 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic',
-'firebase','starter.factories',
-'starter.controllers'
+angular.module('MyApp', ['ionic',
+'firebase','MyApp.factories',
+'MyApp.controllers',
+'MyApp.login.controllers',
+'MyApp.signup.controllers',
+'MyApp.org.controllers',
+'MyApp.orgs.controllers',
+'MyApp.home.controllers',
+'MyApp.settings.controllers'
 ])
   .run(function($ionicPlatform, Fire,
     Auth, $location, $rootScope,$state,
@@ -32,10 +38,10 @@ angular.module('starter', ['ionic',
         if (authData) {
             //console.log("Logged in as:", authData);
             $rootScope.authData = authData;
-
+            console.log("Logged in as:", authData);
             Fire.child("users").child(authData.uid).once('value', function (snapshot) {
               var val = snapshot.val();
-              console.log(val.displayName);
+            //  console.log(val.displayName);
               $rootScope.loggedInUser = val;
           });
 
@@ -123,8 +129,8 @@ angular.module('starter', ['ionic',
         .state('login', {
           url: '/login',
           templateUrl: 'templates/login.html',
-          controller: 'LoginCtrl',
-          resolve: {
+          controller: 'LoginCtrl'
+          ,resolve: {
               // controller will not be loaded until $waitForAuth resolves
               // Auth refers to our $firebaseAuth wrapper in the example above
               "currentAuth": ["Auth", function(Auth) {
@@ -137,7 +143,16 @@ angular.module('starter', ['ionic',
           url: '/setting',
           views: {
             'menuContent': {
-              templateUrl: 'templates/setting.html'
+              templateUrl: 'templates/setting.html',
+                controller: 'SettingsCtrl',resolve: {
+                      // controller will not be loaded until $waitForAuth resolves
+                      // Auth refers to our $firebaseAuth wrapper in the example above
+                      "currentAuth": ["Auth", function(Auth) {
+                        // $waitForAuth returns a promise so the resolve waits for it to complete
+                        //return Auth.$waitForAuth();
+                        return Auth.$waitForAuth();
+                      }]
+                    }
             }
           }
         })
@@ -154,7 +169,70 @@ angular.module('starter', ['ionic',
           views: {
             'menuContent': {
               templateUrl: 'templates/playlists.html',
-              controller: 'PlaylistsCtrl'
+              controller: 'PlaylistsCtrl',resolve: {
+                    // controller will not be loaded until $waitForAuth resolves
+                    // Auth refers to our $firebaseAuth wrapper in the example above
+                    "currentAuth": ["Auth", function(Auth) {
+                      // $waitForAuth returns a promise so the resolve waits for it to complete
+                      //return Auth.$waitForAuth();
+                      return Auth.$requireAuth();
+                    }]
+                  }
+
+            }
+          }
+        })
+        .state('app.home', {
+          url: '/home',
+          views: {
+            'menuContent': {
+              templateUrl: 'templates/home.html',
+              controller: 'HomeCtrl',resolve: {
+                    // controller will not be loaded until $waitForAuth resolves
+                    // Auth refers to our $firebaseAuth wrapper in the example above
+                    "currentAuth": ["Auth", function(Auth) {
+                      // $waitForAuth returns a promise so the resolve waits for it to complete
+                      //return Auth.$waitForAuth();
+                      return Auth.$requireAuth();
+                    }]
+                  }
+
+            }
+          }
+        })
+        .state('app.organization', {
+          url: '/organization',
+          views: {
+            'menuContent': {
+              templateUrl: 'templates/create_organization.html',
+              controller: 'OrganizationCtrl',resolve: {
+                    // controller will not be loaded until $waitForAuth resolves
+                    // Auth refers to our $firebaseAuth wrapper in the example above
+                    "currentAuth": ["Auth", function(Auth) {
+                      // $waitForAuth returns a promise so the resolve waits for it to complete
+                      //return Auth.$waitForAuth();
+                      return Auth.$requireAuth();
+                    }]
+                  }
+
+            }
+          }
+        })
+        .state('app.organizations', {
+          url: '/organizations',
+          views: {
+            'menuContent': {
+              templateUrl: 'templates/myorgs.html',
+              controller: 'OrganizationsCtrl',resolve: {
+                    // controller will not be loaded until $waitForAuth resolves
+                    // Auth refers to our $firebaseAuth wrapper in the example above
+                    "currentAuth": ["Auth", function(Auth) {
+                      // $waitForAuth returns a promise so the resolve waits for it to complete
+                      //return Auth.$waitForAuth();
+                      return Auth.$requireAuth();
+                    }]
+                  }
+
             }
           }
         })
@@ -163,12 +241,21 @@ angular.module('starter', ['ionic',
         views: {
           'menuContent': {
             templateUrl: 'templates/playlist.html',
-            controller: 'PlaylistCtrl'
+            controller: 'PlaylistCtrl'  ,resolve: {
+                  // controller will not be loaded until $waitForAuth resolves
+                  // Auth refers to our $firebaseAuth wrapper in the example above
+                  "currentAuth": ["Auth", function(Auth) {
+                    // $waitForAuth returns a promise so the resolve waits for it to complete
+                    //return Auth.$waitForAuth();
+                    return Auth.$requireAuth();
+                  }]
+                }
           }
         }
       });
-  // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/playlists');
+    // if none of the above states are matched, use this as the fallback
+    $urlRouterProvider.otherwise('/app/home');
+
 })
 
 .constant('FIREBASE_ROOT', 'https://errandstest.firebaseio.com');

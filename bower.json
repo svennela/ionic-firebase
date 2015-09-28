@@ -13,6 +13,7 @@
     "angularfire": "~1.1.1",
     "bourbon": "~4.2.3",
     "firebase": "~2.2.9",
+    "moment": "~2.10.6",
     "firebase-simple-login": "~1.6.4",
     "ionic-contrib-tinder-cards": "*",
     "ngCordova": "~0.1.17-alpha",
