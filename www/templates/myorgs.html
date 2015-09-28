@@ -1,0 +1,12 @@
+<ion-view view-title="Your Organizations">
+  <ion-nav-buttons side="right">
+    <button class="button button-icon ion-plus" href="#/app/organization/" ></button>
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="org in organizations" href="#/app/organization/{{org.orgId}}">
+        {{org.name}}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
